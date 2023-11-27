@@ -1,6 +1,6 @@
 import unittest
 import json
-from models.pairing import *
+from scheduler.models.pairing import *
 
 
 class TestPairing(unittest.TestCase):

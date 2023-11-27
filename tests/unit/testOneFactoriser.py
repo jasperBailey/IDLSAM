@@ -1,5 +1,5 @@
 import unittest
-from models.onefactoriser import OneFactoriser
+from scheduler.models.onefactoriser import OneFactoriser
 
 
 class TestOneFactoriser(unittest.TestCase):

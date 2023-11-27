@@ -1,6 +1,6 @@
 import unittest
 import json
-from models.tournamentscheduler import *
+from scheduler.models.tournamentscheduler import *
 from data.datarandomiser import *
 
 
