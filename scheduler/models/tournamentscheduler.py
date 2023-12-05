@@ -74,7 +74,12 @@ class TournamentScheduler:
                             self.getBestSolScore(),
                             self.minSolScore,
                         )
-        return (self.getBestSol(), self.getBestSolScore(), self.minSolScore)
+        return (
+            [set(week) for week in self.getBestSol()],
+            self.getBestSolScore(),
+            self.minSolScore,
+            "hi",
+        )
 
     def createPairings(self) -> list:
         # Returns:

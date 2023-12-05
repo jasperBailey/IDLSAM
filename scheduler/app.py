@@ -1,4 +1,5 @@
 import json
+from models.tournamentscheduler import *
 
 # import requests
 
@@ -24,14 +25,15 @@ def lambda_handler(event, context):
 
         Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
     """
-
-    scheduleData = event["teamAvailabilities"]
-
+    scheduleData = json.loads(event["body"])["teamsAvailabilities"]
+    scheduler = TournamentScheduler(scheduleData)
+    schedule = scheduler.calcBestSchedule()
+    print(schedule)
     return {
         "statusCode": 200,
         "body": json.dumps(
             {
-                "message": "hello world!!!!!!!",
+                "message": schedule,
                 # "location": ip.text.replace("\n", "")
             }
         ),
