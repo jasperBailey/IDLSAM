@@ -4,20 +4,6 @@ from models.tournamentscheduler import *
 # import requests
 
 
-#     scheduler = TournamentScheduler(scheduleData)
-#     schedule = scheduler.calcBestSchedule()
-#     print(schedule)
-#     return {
-#         "statusCode": 200,
-#         "body": json.dumps(
-#             {
-#                 "message": schedule,
-#                 # "location": ip.text.replace("\n", "")
-#             }
-#         ),
-#     }
-
-
 def lambda_handler(event, context):
     try:
         # Check if the request body exists
@@ -45,7 +31,11 @@ def lambda_handler(event, context):
             ),
         }
 
+    scheduler = TournamentScheduler(scheduleData)
+    schedule = scheduler.calcBestSchedule()
+    print(schedule)
+
     return {
         "statusCode": 200,
-        "body": json.dumps({"message": "Received payload", "payload": event}),
+        "body": json.dumps({"message": "Received payload", "payload": schedule}),
     }
