@@ -25,7 +25,32 @@ def lambda_handler(event, context):
 
         Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
     """
-    scheduleData = json.loads(event["body"])["teamsAvailabilities"]
+    try:
+        # Check if the request body exists
+        if event["body"]:
+            scheduleData = json.loads(event["body"])["teamsAvailabilities"]
+            # Proceed with the rest of your code using scheduleData
+        else:
+            # Handle the case where the request body is empty
+            return {
+                "statusCode": 400,
+                "body": json.dumps({"message": "Request body is empty"}),
+            }
+    except json.JSONDecodeError as e:
+        # Handle JSON decoding errors
+        return {
+            "statusCode": 400,
+            "body": json.dumps({"message": f"Error decoding JSON: {str(e)}"}),
+        }
+    except KeyError as e:
+        # Handle missing key error (teamsAvailabilities)
+        return {
+            "statusCode": 400,
+            "body": json.dumps(
+                {"message": f"Missing key 'teamsAvailabilities' in JSON: {str(e)}"}
+            ),
+        }
+
     scheduler = TournamentScheduler(scheduleData)
     schedule = scheduler.calcBestSchedule()
     print(schedule)
