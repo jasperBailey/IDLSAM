@@ -70,15 +70,14 @@ class TournamentScheduler:
                     self.setBestSol(schedule)
                     if score == self.minSolScore:
                         return (
-                            self.getBestSol(),
+                            [tuple(week) for week in self.getBestSol()],
                             self.getBestSolScore(),
                             self.minSolScore,
                         )
         return (
-            [set(week) for week in self.getBestSol()],
+            [tuple(week) for week in self.getBestSol()],
             self.getBestSolScore(),
             self.minSolScore,
-            "hi",
         )
 
     def createPairings(self) -> list:
