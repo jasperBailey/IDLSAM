@@ -37,5 +37,7 @@ def lambda_handler(event, context):
 
     return {
         "statusCode": 200,
-        "body": json.dumps({"message": "Received payload", "payload": schedule}),
+        "body": json.dumps(
+            {"message": "Schedule calculated successfully.", "schedule": schedule}
+        ),
     }
