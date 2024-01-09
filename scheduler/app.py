@@ -33,7 +33,6 @@ def lambda_handler(event, context):
 
     scheduler = TournamentScheduler(scheduleData)
     schedule = scheduler.calcBestSchedule()
-    print(schedule)
 
     return {
         "statusCode": 200,
