@@ -13,7 +13,6 @@ Globals:
             AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
             AllowOrigin: "'*'"
             MaxAge: "'600'"
-            AllowCredentials: true
     Function:
         Timeout: 3
 
