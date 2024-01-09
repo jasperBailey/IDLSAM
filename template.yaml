@@ -8,6 +8,8 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
     Api:
+        Auth:
+            AddDefaultAuthorizerToCorsPreflight: false
         Cors:
             AllowMethods: "'*'"
             AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
