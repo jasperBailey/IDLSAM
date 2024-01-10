@@ -74,6 +74,7 @@ class TournamentScheduler:
                     if score == self.minSolScore:
                         end = True
                         break
+
         return {
             "schedule": [tuple(week) for week in self.getBestSol()],
             "scheduleScore": self.getBestSolScore(),

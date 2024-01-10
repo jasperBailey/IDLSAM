@@ -31,8 +31,22 @@ def lambda_handler(event, context):
             ),
         }
 
-    scheduler = TournamentScheduler(scheduleData)
-    schedule = scheduler.calcBestSchedule()
+    try:
+        scheduler = TournamentScheduler(scheduleData)
+    except e:
+        return {
+            "statusCode": 400,
+            "body": json.dumps(
+                {"message": f"Error creating TournamentScheduler: {str(e)}"}
+            ),
+        }
+    try:
+        schedule = scheduler.calcBestSchedule()
+    except e:
+        return {
+            "statusCode": 400,
+            "body": json.dumps({"message": f"Error calculating schedule: {str(e)}"}),
+        }
 
     return {
         "statusCode": 200,
