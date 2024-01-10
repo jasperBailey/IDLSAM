@@ -57,7 +57,11 @@ class TournamentScheduler:
         return oneFactorMap
 
     def calcBestSchedule(self):
+        bye = False
         end = False
+        if self.getTeams()[7] == "BYE":
+            bye = True
+
         for onefactorisation in self.onefactoriser.oneFactorisations():
             if end:
                 break
@@ -65,13 +69,16 @@ class TournamentScheduler:
                 score = 0
                 for i in self._rangeNumWeeks:
                     for match in schedule[i]:
-                        score += self.pairings[match[0]][match[1]].getWeekScores()[i]
+                        if not bye or (match[0] != 7 and match[1] != 7):
+                            score += self.pairings[match[0]][match[1]].getWeekScores()[
+                                i
+                            ]
                     if score >= self.bestSolScore:
                         break
                 else:
                     self.setBestSolScore(score)
                     self.setBestSol(schedule)
-                    if score == self.minSolScore:
+                    if score == self.minSolScore and not bye:
                         end = True
                         break
 
