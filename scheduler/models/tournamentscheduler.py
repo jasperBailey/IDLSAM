@@ -57,7 +57,10 @@ class TournamentScheduler:
         return oneFactorMap
 
     def calcBestSchedule(self):
+        end = False
         for onefactorisation in self.onefactoriser.oneFactorisations():
+            if end:
+                break
             for schedule in permutations(onefactorisation):
                 score = 0
                 for i in self._rangeNumWeeks:
@@ -69,16 +72,12 @@ class TournamentScheduler:
                     self.setBestSolScore(score)
                     self.setBestSol(schedule)
                     if score == self.minSolScore:
-                        return (
-                            [tuple(week) for week in self.getBestSol()],
-                            self.getBestSolScore(),
-                            self.minSolScore,
-                        )
-        return (
-            [tuple(week) for week in self.getBestSol()],
-            self.getBestSolScore(),
-            self.minSolScore,
-        )
+                        end = True
+                        break
+        return {
+            "schedule": [tuple(week) for week in self.getBestSol()],
+            "scheduleScore": self.getBestSolScore(),
+        }
 
     def createPairings(self) -> list:
         # Returns:

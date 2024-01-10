@@ -42,6 +42,6 @@ def lambda_handler(event, context):
             "Access-Control-Allow-Methods": "POST",
         },
         "body": json.dumps(
-            {"message": "Schedule calculated successfully.", "schedule": schedule}
+            {"message": "Schedule calculated successfully.", "rawSchedule": schedule}
         ),
     }
