@@ -4,7 +4,7 @@ from itertools import permutations
 class SubScheduler:
     def __init__(self, oneFactorisation: list, pairingScores: dict, bye: bool):
         self.bye = bye
-        self.onefactorisation = oneFactorisation
+        self.oneFactorisation = oneFactorisation
         self.pairingScores = pairingScores
 
         self._numTeams = len(pairingScores)
