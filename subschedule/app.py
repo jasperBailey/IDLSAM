@@ -1,11 +1,13 @@
 import json
-from models.tournamentscheduler import *
+from subscheduler import SubScheduler
+
+# import requests
 
 
 def lambda_handler(event, context):
     try:
         if event["body"]:
-            scheduleData = json.loads(event["body"])["teamsAvailabilities"]
+            subscheduleData = json.loads(event["body"])
         else:
             return {
                 "statusCode": 400,
@@ -16,15 +18,8 @@ def lambda_handler(event, context):
             "statusCode": 400,
             "body": json.dumps({"message": f"Error decoding JSON: {str(e)}"}),
         }
-    except KeyError as e:
-        return {
-            "statusCode": 400,
-            "body": json.dumps(
-                {"message": f"Missing key 'teamsAvailabilities' in JSON: {str(e)}"}
-            ),
-        }
 
-    if len(scheduleData) > 8:
+    if len(subscheduleData["pairingScores"]) > 8:
         return {
             "statusCode": 413,
             "body": json.dumps(
@@ -33,18 +28,25 @@ def lambda_handler(event, context):
                 }
             ),
         }
-
     try:
-        scheduler = TournamentScheduler(scheduleData)
+        subscheduler = SubScheduler(
+            subscheduleData["oneFactorisation"],
+            subscheduleData["pairingScores"],
+            subscheduleData["bye"],
+        )
+    except KeyError as e:
+        return {
+            "statusCode": 400,
+            "body": json.dumps({"message": f"Missing key in JSON: {str(e)}"}),
+        }
     except e:
         return {
             "statusCode": 500,
-            "body": json.dumps(
-                {"message": f"Error creating TournamentScheduler: {str(e)}"}
-            ),
+            "body": json.dumps({"message": f"Error creating subscheduler: {str(e)}"}),
         }
+
     try:
-        schedule = scheduler.calcBestSchedule()
+        subschedule = subscheduler.calcBestSchedule()
     except e:
         return {
             "statusCode": 500,
@@ -59,6 +61,6 @@ def lambda_handler(event, context):
             "Access-Control-Allow-Methods": "POST",
         },
         "body": json.dumps(
-            {"message": "Schedule calculated successfully.", "rawSchedule": schedule}
+            {"message": "Schedule calculated successfully.", "subschedule": subschedule}
         ),
     }

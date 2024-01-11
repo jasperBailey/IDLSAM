@@ -36,6 +36,23 @@ Resources:
             Timeout: 30
             MemorySize: 3008
 
+    SubscheduleFunction:
+        Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+        Properties:
+            CodeUri: subscheduler/
+            Handler: app.lambda_handler
+            Runtime: python3.11
+            Architectures:
+                - x86_64
+            Events:
+                Schedule:
+                    Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+                    Properties:
+                        Path: /subschedule
+                        Method: post
+            Timeout: 30
+            MemorySize: 3008
+
     HelloWorldFunction:
         Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
         Properties:
@@ -58,9 +75,18 @@ Outputs:
     ScheduleApi:
         Description: "API Gateway endpoint URL for Prod stage for Schedule function"
         Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/schedule/"
+    SubscheduleApi:
+        Description: "API Gateway endpoint URL for Prod stage for Subschedule function"
+        Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/subschedule/"
     ScheduleFunction:
         Description: "Schedule Lambda Function ARN"
         Value: !GetAtt ScheduleFunction.Arn
+    SubscheduleFunction:
+        Description: "Subschedule Lambda Function ARN"
+        Value: !GetAtt SubscheduleFunction.Arn
     ScheduleFunctionIamRole:
         Description: "Implicit IAM Role created for Schedule function"
         Value: !GetAtt ScheduleFunctionRole.Arn
+    SubscheduleFunctionIamRole:
+        Description: "Implicit IAM Role created for Subschedule function"
+        Value: !GetAtt SubscheduleFunctionRole.Arn

@@ -5,7 +5,6 @@ from models.pairing import Pairing
 
 class TournamentScheduler:
     def __init__(self, teamsAvailabilities: dict):
-        self.library = {}
         self.teams = list(teamsAvailabilities)
         self.teamsAvailabilities = [teamsAvailabilities[name] for name in self.teams]
         self._numTeams = len(list(self.teamsAvailabilities))
@@ -18,10 +17,6 @@ class TournamentScheduler:
         self.onefactoriser = OneFactoriser(self._numTeams)
         self._rangeNumWeeks = range(self._numWeeks)
         self.pairings = self.createPairings()
-        self.oneFactorScores = self.calcOneFactorScores()
-
-    def getOneFactorScores(self):
-        return dict(self.oneFactorScores)
 
     def getBestSol(self):
         return self.bestSol
@@ -41,20 +36,13 @@ class TournamentScheduler:
     def getTeams(self):
         return self.teams
 
-    def calcOneFactorScores(self):
-        oneFactorMap = {}
-        for oneFactor in self.onefactoriser.getAllOneFactors():
-            weekScores = []
-            for i in self._rangeNumWeeks:
-                weekScores.append(0)
-            for match in oneFactor:
-                tMatch = tuple(match)
-                for i in self._rangeNumWeeks:
-                    weekScores[i] += self.pairings[tMatch[0]][
-                        tMatch[1]
-                    ].getWeekScores()[i]
-            oneFactorMap[oneFactor] = weekScores
-        return oneFactorMap
+    def getAllWeekScores(self):
+        allWeekScores = {}
+        for i in self.pairings:
+            allWeekScores[i] = {}
+            for j in self.pairings[i]:
+                allWeekScores[i][j] = self.pairings[i][j].getWeekScores()
+        return allWeekScores
 
     def calcBestSchedule(self):
         bye = False
