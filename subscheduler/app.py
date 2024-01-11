@@ -39,7 +39,7 @@ def lambda_handler(event, context):
             "statusCode": 400,
             "body": json.dumps({"message": f"Missing key in JSON: {str(e)}"}),
         }
-    except e:
+    except Exception as e:
         return {
             "statusCode": 500,
             "body": json.dumps({"message": f"Error creating subscheduler: {str(e)}"}),
@@ -47,7 +47,7 @@ def lambda_handler(event, context):
 
     try:
         subschedule = subscheduler.calcBestSchedule()
-    except e:
+    except Exception as e:
         return {
             "statusCode": 500,
             "body": json.dumps({"message": f"Error calculating schedule: {str(e)}"}),

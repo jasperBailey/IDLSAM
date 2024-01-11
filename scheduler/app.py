@@ -36,7 +36,7 @@ def lambda_handler(event, context):
 
     try:
         scheduler = TournamentScheduler(scheduleData)
-    except e:
+    except Exception as e:
         return {
             "statusCode": 500,
             "body": json.dumps(
@@ -45,7 +45,7 @@ def lambda_handler(event, context):
         }
     try:
         schedule = scheduler.calcBestSchedule()
-    except e:
+    except Exception as e:
         return {
             "statusCode": 500,
             "body": json.dumps({"message": f"Error calculating schedule: {str(e)}"}),
