@@ -37,7 +37,7 @@ class SubScheduler:
                     if not self.bye or (
                         match[0] != self._numWeeks and match[1] != self._numWeeks
                     ):
-                        score += self.pairingScores[match[0]][match[1]][i]
+                        score += self.pairingScores[str(match[0])][str(match[1])][i]
                 if score >= self.bestSolScore:
                     break
             else:
