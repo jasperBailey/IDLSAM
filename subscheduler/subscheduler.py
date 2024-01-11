@@ -30,7 +30,7 @@ class SubScheduler:
         self.bestSolScore = value
 
     def calcBestSchedule(self):
-        for schedule in permutations(self.getOneFactorisation):
+        for schedule in permutations(self.getOneFactorisation()):
             score = 0
             for i in self._rangeNumWeeks:
                 for match in schedule[i]:
