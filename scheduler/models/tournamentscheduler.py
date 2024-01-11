@@ -58,18 +58,18 @@ class TournamentScheduler:
 
     def calcBestSchedule(self):
         bye = False
-        end = False
-        if self.getTeams()[7] == "BYE":
+        if self.getTeams()[self._numTeams - 1] == "BYE":
             bye = True
 
         for onefactorisation in self.onefactoriser.oneFactorisations():
-            if end:
-                break
             for schedule in permutations(onefactorisation):
                 score = 0
                 for i in self._rangeNumWeeks:
                     for match in schedule[i]:
-                        if not bye or (match[0] != 7 and match[1] != 7):
+                        if not bye or (
+                            match[0] != self._numTeams - 1
+                            and match[1] != self._numTeams - 1
+                        ):
                             score += self.pairings[match[0]][match[1]].getWeekScores()[
                                 i
                             ]
@@ -78,13 +78,37 @@ class TournamentScheduler:
                 else:
                     self.setBestSolScore(score)
                     self.setBestSol(schedule)
-                    if score == self.minSolScore and not bye:
-                        end = True
-                        break
+
+        schedule = [tuple(week) for week in self.getBestSol()]
+        teams = self.getTeams()
+
+        weekDays = {
+            0: "SUNDAY",
+            1: "MONDAY",
+            2: "TUESDAY",
+            3: "WEDNESDAY",
+            4: "THURSDAY",
+            5: "FRIDAY",
+            6: "SATURDAY",
+        }
+
+        toReturn = []
+        for i in range(len(schedule)):
+            toReturn.append([])
+            for match in schedule[i]:
+                toReturn[i].append(
+                    [
+                        teams[match[0]],
+                        teams[match[1]],
+                        weekDays[self.pairings[match[0]][match[1]].getBestDays()[i]],
+                        self.pairings[match[0]][match[1]].getWeekScores()[i],
+                    ]
+                )
 
         return {
-            "schedule": [tuple(week) for week in self.getBestSol()],
+            "schedule": toReturn,
             "scheduleScore": self.getBestSolScore(),
+            "teams": self.teams,
         }
 
     def createPairings(self) -> list:
