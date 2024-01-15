@@ -1,6 +1,9 @@
 from models.onefactoriser import OneFactoriser
 from itertools import permutations
 from models.pairing import Pairing
+import asyncio
+import aiohttp
+import time
 
 
 class TournamentScheduler:
@@ -17,6 +20,13 @@ class TournamentScheduler:
         self.onefactoriser = OneFactoriser(self._numTeams)
         self._rangeNumWeeks = range(self._numWeeks)
         self.pairings = self.createPairings()
+        self.subschedules = set()
+
+    def getSubschedules(self):
+        return set(self.subschedules)
+
+    def setSubschedules(self, subschedules):
+        self.subschedules = subschedules
 
     def getBestSol(self):
         return self.bestSol
@@ -44,30 +54,51 @@ class TournamentScheduler:
                 allWeekScores[i][j] = self.pairings[i][j].getWeekScores()
         return allWeekScores
 
+    def gatherAllSubSols(self):
+        start_time = time.time()
+
+        async def main():
+            async with aiohttp.ClientSession() as session:
+                bye = False
+                if self.getTeams()[self._numTeams - 1] == "BYE":
+                    bye = True
+                tasks = []
+                for onefactorisation in self.onefactoriser.oneFactorisations():
+                    url = "https://21p2ys0os2.execute-api.eu-north-1.amazonaws.com/Prod/subschedule/"
+                    tasks.append(
+                        asyncio.ensure_future(
+                            self.getSubschedule(session, url, onefactorisation, bye)
+                        )
+                    )
+
+                subschedules = await asyncio.gather(*tasks)
+                self.setSubschedules(subschedules)
+
+        asyncio.run(main())
+        print(
+            "--- %s seconds to gather all subschedules---" % (time.time() - start_time)
+        )
+
+    async def getSubschedule(self, session, url, onefactorisation, bye):
+        json = {
+            "oneFactorisation": onefactorisation,
+            "pairingScores": self.getAllWeekScores(),
+            "bye": bye,
+        }
+        async with session.post(url, json) as resp:  ###
+            subschedule = await resp.json()
+            return subschedule
+
     def calcBestSchedule(self):
-        bye = False
-        if self.getTeams()[self._numTeams - 1] == "BYE":
-            bye = True
+        for solution in self.getSubschedules():
+            if solution["scheduleScore"] < self.getBestSolScore():
+                self.setBestSolScore(solution["scheduleScore"])
+                self.setBestSol(solution["schedule"])
 
-        for onefactorisation in self.onefactoriser.oneFactorisations():
-            for schedule in permutations(onefactorisation):
-                score = 0
-                for i in self._rangeNumWeeks:
-                    for match in schedule[i]:
-                        if not bye or (
-                            match[0] != self._numTeams - 1
-                            and match[1] != self._numTeams - 1
-                        ):
-                            score += self.pairings[match[0]][match[1]].getWeekScores()[
-                                i
-                            ]
-                    if score >= self.bestSolScore:
-                        break
-                else:
-                    self.setBestSolScore(score)
-                    self.setBestSol(schedule)
+        return self.getFormattedBestSchedule()
 
-        schedule = [tuple(week) for week in self.getBestSol()]
+    def getFormattedBestSchedule(self):
+        schedule = self.getBestSol()
         teams = self.getTeams()
 
         weekDays = {
@@ -93,11 +124,7 @@ class TournamentScheduler:
                     ]
                 )
 
-        return {
-            "schedule": toReturn,
-            "scheduleScore": self.getBestSolScore(),
-            "teams": self.teams,
-        }
+        return {"schedule": toReturn, "scheduleScore": self.getBestSolScore()}
 
     def createPairings(self) -> list:
         # Returns:
