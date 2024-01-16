@@ -44,6 +44,14 @@ def lambda_handler(event, context):
             ),
         }
     try:
+        scheduler.gatherAllSubSols()
+    except Exception as e:
+        return {
+            "statusCode": 500,
+            "body": json.dumps({"message": f"Error gathering subchedules: {str(e)}"}),
+        }
+
+    try:
         schedule = scheduler.calcBestSchedule()
     except Exception as e:
         return {
