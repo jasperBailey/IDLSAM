@@ -85,7 +85,7 @@ class TournamentScheduler:
             "pairingScores": self.getAllWeekScores(),
             "bye": bye,
         }
-        async with session.post(url, json) as resp:  ###
+        async with session.post(url, json=json) as resp:  ###
             subschedule = await resp.json()
             return subschedule
 
