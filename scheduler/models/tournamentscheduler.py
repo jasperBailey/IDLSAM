@@ -20,10 +20,10 @@ class TournamentScheduler:
         self.onefactoriser = OneFactoriser(self._numTeams)
         self._rangeNumWeeks = range(self._numWeeks)
         self.pairings = self.createPairings()
-        self.subschedules = set()
+        self.subschedules = dict()
 
     def getSubschedules(self):
-        return set(self.subschedules)
+        return self.subschedules
 
     def setSubschedules(self, subschedules):
         self.subschedules = subschedules
