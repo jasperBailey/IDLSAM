@@ -64,10 +64,15 @@ class TournamentScheduler:
                     bye = True
                 tasks = []
                 for onefactorisation in self.onefactoriser.oneFactorisations():
+                    onefactorisationToSend = []
+                    for onefactor in onefactorisation:
+                        onefactorisationToSend.append(tuple(onefactor))
                     url = "https://21p2ys0os2.execute-api.eu-north-1.amazonaws.com/Prod/subschedule/"
                     tasks.append(
                         asyncio.ensure_future(
-                            self.getSubschedule(session, url, onefactorisation, bye)
+                            self.getSubschedule(
+                                session, url, onefactorisationToSend, bye
+                            )
                         )
                     )
 
@@ -87,7 +92,7 @@ class TournamentScheduler:
         }
         async with session.post(url, json=json) as resp:  ###
             subschedule = await resp.json()
-            return subschedule
+            return subschedule["subschedule"]
 
     def calcBestSchedule(self):
         for solution in self.getSubschedules():
