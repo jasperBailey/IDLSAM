@@ -1,5 +1,5 @@
 import json
-from models.tournamentscheduler import *
+from helpers.main import main
 
 headers = (
     {
@@ -35,49 +35,18 @@ def lambda_handler(event, context):
             ),
         }
 
-    if len(scheduleData) > 8:
-        return {
-            "statusCode": 413,
-            "headers": headers,
-            "body": json.dumps(
-                {
-                    "message": f"AWS hosted scheduler can't take more than 8 teams (costs too much compute time!)"
-                }
-            ),
-        }
-
-    try:
-        scheduler = TournamentScheduler(scheduleData)
-    except Exception as e:
-        return {
-            "statusCode": 500,
-            "headers": headers,
-            "body": json.dumps(
-                {"message": f"Error creating TournamentScheduler: {str(e)}"}
-            ),
-        }
-    try:
-        scheduler.gatherAllSubSols()
-    except Exception as e:
-        return {
-            "statusCode": 500,
-            "headers": headers,
-            "body": json.dumps({"message": f"Error gathering subchedules: {str(e)}"}),
-        }
-
-    try:
-        schedule = scheduler.calcBestSchedule()
-    except Exception as e:
-        return {
-            "statusCode": 500,
-            "headers": headers,
-            "body": json.dumps({"message": f"Error calculating schedule: {str(e)}"}),
-        }
+    # scheduleData is expected to be a list of CSV lines (strings)
+    schedule, badness, human_output = main(csv_lines=scheduleData, bye=True)
 
     return {
         "statusCode": 200,
         "headers": headers,
         "body": json.dumps(
-            {"message": "Schedule calculated successfully.", "rawSchedule": schedule}
+            {
+                "message": "Schedule calculated successfully.",
+                "rawSchedule": schedule,
+                "badness": badness,
+                "humanOutput": human_output,
+            }
         ),
     }
