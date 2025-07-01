@@ -14,6 +14,7 @@ def lambda_handler(event, context):
     try:
         if event["body"]:
             scheduleData = json.loads(event["body"])["teamsAvailabilities"]
+            print(scheduleData)
         else:
             return {
                 "statusCode": 400,
