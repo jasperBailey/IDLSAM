@@ -33,8 +33,6 @@ Resources:
                     Properties:
                         Path: /schedule
                         Method: post
-                        Auth:
-                            ApiKeyRequired: true
             Timeout: 10
             MemorySize: 512
 
