@@ -1,13 +1,11 @@
 import json
 from helpers.main import main
 
-headers = (
-    {
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST",
-    },
-)
+headers = {
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "POST",
+}
 
 
 def lambda_handler(event, context):
