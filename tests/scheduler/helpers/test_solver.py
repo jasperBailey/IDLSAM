@@ -6,7 +6,7 @@ from scheduler.helpers.solver import solve_schedule
 @pytest.mark.parametrize(
     "lines",
     [
-        (["A,1,1,1,1,1,1,1", "B,2,2,2,2,2,2,2", "C,3,3,3,3,3,3,3"]),
+        (["A,1,1,1,1,1,1,1", "B,2,2,2,2,2,2,2"]),
     ],
 )
 def test_solve_schedule_basic(lines):

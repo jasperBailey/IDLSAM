@@ -36,7 +36,7 @@ def lambda_handler(event, context):
         }
 
     # scheduleData is expected to be a list of CSV lines (strings)
-    schedule, badness, human_output = main(csv_lines=scheduleData, bye=True)
+    schedule, badness, human_output = main(csv_lines=scheduleData)
 
     return {
         "statusCode": 200,
