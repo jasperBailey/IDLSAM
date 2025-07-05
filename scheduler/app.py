@@ -35,7 +35,14 @@ def lambda_handler(event, context):
         }
 
     # scheduleData is expected to be a list of CSV lines (strings)
-    schedule, badness, human_output = main(csv_lines=scheduleData)
+    try:
+        schedule, badness, human_output = main(csv_lines=scheduleData)
+    except Exception as e:
+        return {
+            "statusCode": 500,
+            "headers": headers,
+            "body": json.dumps({"message": f"Error processing schedule: {str(e)}"}),
+        }
 
     print(schedule)
 
