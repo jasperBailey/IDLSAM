@@ -26,15 +26,15 @@ Resources:
             Handler: app.lambda_handler
             Runtime: python3.11
             Architectures:
-                - x86_64
+                - arm64
             Events:
                 Schedule:
                     Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
                     Properties:
                         Path: /schedule
                         Method: post
-            Timeout: 60
-            MemorySize: 3008
+            Timeout: 30
+            MemorySize: 8846
 
 Outputs:
     # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
