@@ -34,7 +34,7 @@ Resources:
                         Path: /schedule
                         Method: post
             Timeout: 20
-            MemorySize: 3009
+            MemorySize: 3008
 
 Outputs:
     # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
