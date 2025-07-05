@@ -26,7 +26,7 @@ def solve_schedule(pairings4teams, bye=False):
                     weekly_matches.append(match[(t, o, w)])
                 elif o < t:
                     weekly_matches.append(match[(o, t, w)])
-            model.Add(sum(weekly_matches) <= 1)
+            model.AddAtMostOne(weekly_matches)
 
     # Objective: minimize total badness, ignore matches involving the ghost BYE team
     total_badness = []
