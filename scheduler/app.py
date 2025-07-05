@@ -38,6 +38,7 @@ def lambda_handler(event, context):
     try:
         schedule, badness, human_output = main(csv_lines=scheduleData)
     except Exception as e:
+        print(f"Error processing schedule: {str(e)}")
         return {
             "statusCode": 500,
             "headers": headers,
