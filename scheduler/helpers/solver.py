@@ -43,7 +43,7 @@ def solve_schedule(pairing_diffs, bye=False):
     solver = cp_model.CpSolver()
     status = solver.Solve(model)
 
-    if status == cp_model.OPTIMAL or status == cp_model.FEASIBLE:
+    if status == cp_model.OPTIMAL:
         schedule = [[] for _ in range(WEEKS)]
         for i in range(N):
             for j in range(i + 1, N):
