@@ -10,7 +10,9 @@ from scheduler.helpers.solver import solve_schedule
     ],
 )
 def test_solve_schedule_basic(lines):
-    pairings, best_days, team_names = compute_pairings_from_schedule_lines(lines)
-    schedule, badness = solve_schedule(pairings, bye=False)
+    pairings, pairing_differentials, best_days, team_names = (
+        compute_pairings_from_schedule_lines(lines)
+    )
+    schedule, badness = solve_schedule(pairing_differentials, bye=False)
     assert schedule is not None
     assert isinstance(badness, (int, float))

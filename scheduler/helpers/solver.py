@@ -1,8 +1,8 @@
 from ortools.sat.python import cp_model
 
 
-def solve_schedule(pairings4teams, bye=False):
-    N = len(pairings4teams)
+def solve_schedule(pairing_diffs, bye=False):
+    N = len(pairing_diffs)
     WEEKS = N - 1
     model = cp_model.CpModel()
 
@@ -35,7 +35,7 @@ def solve_schedule(pairings4teams, bye=False):
             for w in range(WEEKS):
                 if bye and (i == N - 1 or j == N - 1):
                     continue
-                cost = pairings4teams[max(i, j)][min(i, j)][w]
+                cost = pairing_diffs[max(i, j)][min(i, j)][w]
                 total_badness.append(match[(i, j, w)] * cost)
 
     model.Minimize(sum(total_badness))

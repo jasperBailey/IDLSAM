@@ -9,7 +9,9 @@ from scheduler.helpers.pairings import compute_pairings_from_schedule_lines
     ],
 )
 def test_compute_pairings_from_schedule_lines_basic(lines, expected_team_names):
-    pairings, best_days, team_names = compute_pairings_from_schedule_lines(lines)
+    pairings, pairing_differentials, best_days, team_names = (
+        compute_pairings_from_schedule_lines(lines)
+    )
     assert team_names == expected_team_names
     assert len(pairings) == 2
     assert len(pairings[1][0]) == 1  # 1 week

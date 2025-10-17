@@ -15,9 +15,11 @@ def main(csv_lines=None, csv_path=None, bye=True):
     elif csv_lines is None:
         raise ValueError("Either csv_lines or csv_path must be provided.")
 
-    pairings, best_days, team_names = compute_pairings_from_schedule_lines(csv_lines)
+    pairings, pairing_differentials, best_days, team_names = (
+        compute_pairings_from_schedule_lines(csv_lines)
+    )
     bye = "BYE" in team_names
-    schedule, badness = solve_schedule(pairings, bye)
+    schedule, badness = solve_schedule(pairing_differentials, bye)
     human_output = render_human_schedule_with_badness(
         schedule, team_names, best_days, pairings
     )
