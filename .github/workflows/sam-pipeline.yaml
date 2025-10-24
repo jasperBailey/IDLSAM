@@ -18,4 +18,4 @@ jobs:
             - run: sam build --use-container
 
             # sam deploy
-            - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name idl-functions --s3-bucket idlsambucket --capabilities CAPABILITY_IAM --region eu-north-1
+            - run: sam deploy --no-confirm-changeset --stack-name idl-functions --s3-bucket idlsambucket --capabilities CAPABILITY_IAM --region eu-north-1

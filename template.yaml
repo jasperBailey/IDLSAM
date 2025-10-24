@@ -35,6 +35,22 @@ Resources:
                         Method: post
             Timeout: 60
             MemorySize: 3008
+    LandingFunction:
+        Type: AWS::Serverless::Function
+        Properties:
+            CodeUri: scheduler/
+            Handler: landing.lambda_handler
+            Runtime: python3.11
+            Architectures:
+                - x86_64
+            Events:
+                Landing:
+                    Type: Api
+                    Properties:
+                        Path: /
+                        Method: get
+            Timeout: 10
+            MemorySize: 512
 
 Outputs:
     # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
