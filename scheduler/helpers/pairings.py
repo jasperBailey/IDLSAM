@@ -10,32 +10,51 @@ def compute_pairings_from_schedule_lines(lines):
 
     N = len(team_costs)
     TOTAL_DAYS = len(team_costs[0])
-    WEEKS = N - 1
-    assert TOTAL_DAYS >= WEEKS * 7, f"data doesn't extend to the full {WEEKS} weeks"
+    ROUNDS = N - 1
+    assert TOTAL_DAYS >= 7 + (
+        ROUNDS * 7
+    ), f"data doesn't extend to the full {ROUNDS} rounds"
 
     pairings = [[[] for _ in range(N)] for _ in range(N)]
     best_days = [[[] for _ in range(N)] for _ in range(N)]
 
-    # Create the individual team game cost matrix indexed by week rather than day
-    team_costs_by_week = []
+    # Create the individual team game cost matrix indexed by round rather than day
+    team_costs_by_round = []
     for i in range(N):
-        team_costs_by_week.append([])
-        for w in range(WEEKS):
-            team_costs_by_week[i].append(float("inf"))
+        team_costs_by_round.append([])
+
+        team_costs_by_round[i].append(float("inf"))
+        for d in range(14):
+            badness = team_costs[i][d]
+            if badness < team_costs_by_round[i][0]:
+                team_costs_by_round[i][0] = badness
+
+        for r in range(1, ROUNDS):
+            team_costs_by_round[i].append(float("inf"))
             for d in range(7):
-                day_idx = w * 7 + d
+                day_idx = r * 7 + d
                 badness = team_costs[i][day_idx]
-                if badness < team_costs_by_week[i][w]:
-                    team_costs_by_week[i][w] = badness
+                if badness < team_costs_by_round[i][r]:
+                    team_costs_by_round[i][r] = badness
 
     # Create the pairing cost matrix
     for i in range(N):
         for j in range(i):
-            for w in range(WEEKS):
+            min_badness = float("inf")
+            best_day = -1
+            for d in range(14):
+                badness = team_costs[i][d] + team_costs[j][d]
+                if badness < min_badness:
+                    min_badness = badness
+                    best_day = d
+            pairings[i][j].append(min_badness)
+            best_days[i][j].append(best_day)
+
+            for r in range(1, ROUNDS):
                 min_badness = float("inf")
                 best_day = -1
                 for d in range(7):
-                    day_idx = w * 7 + d
+                    day_idx = r * 7 + d
                     badness = team_costs[i][day_idx] + team_costs[j][day_idx]
                     if badness < min_badness:
                         min_badness = badness
@@ -43,7 +62,7 @@ def compute_pairings_from_schedule_lines(lines):
                 pairings[i][j].append(min_badness)
                 best_days[i][j].append(best_day)
 
-    # Create the matrix of the additional cost of having a pairing on a certain week,
+    # Create the matrix of the additional cost of having a pairing on a certain round,
     # relative to the lower bound case
     pairing_differentials = []
     for teamA in range(len(pairings)):
@@ -51,13 +70,13 @@ def compute_pairings_from_schedule_lines(lines):
         for teamB in range(teamA):
             pairing_differentials[teamA].append([])
             pairing = pairings[teamA][teamB]
-            for week in range(len(pairings) - 1):
-                pairing_differentials[teamA][teamB].append(pairing[week])
-                pairing_differentials[teamA][teamB][week] -= team_costs_by_week[teamA][
-                    week
-                ]
-                pairing_differentials[teamA][teamB][week] -= team_costs_by_week[teamB][
-                    week
-                ]
+            for round in range(len(pairings) - 1):
+                pairing_differentials[teamA][teamB].append(pairing[round])
+                pairing_differentials[teamA][teamB][round] -= team_costs_by_round[
+                    teamA
+                ][round]
+                pairing_differentials[teamA][teamB][round] -= team_costs_by_round[
+                    teamB
+                ][round]
 
     return pairings, pairing_differentials, best_days, team_names
